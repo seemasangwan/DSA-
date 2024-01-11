@@ -1,0 +1,27 @@
+BRUTE FORCE APPROACH
+TC O(N*N)
+class Solution {
+public:
+     int maxi=0;
+     void diff(TreeNode*root,int x)
+     {
+         if(!root) return ;
+         maxi=max(maxi,abs(x-root->val));
+         if(root->left)
+         diff(root->left,x);
+         if(root->right)
+         diff(root->right,x);
+     }
+     void solve(TreeNode*root)
+     { 
+         if(!root) return ;
+         if(root->left) diff(root->left,root->val);
+         if(root->right) diff(root->right,root->val);
+         solve(root->left);
+         solve(root->right);
+     }
+    int maxAncestorDiff(TreeNode* root) {
+        solve(root);
+        return maxi;
+    }
+};
