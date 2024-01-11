@@ -25,3 +25,28 @@ public:
         return maxi;
     }
 };
+
+## Optimal solution TC---->O(N)
+We are visiting every path 
+we can find --->maximum value and minimum value in each path
+ans will be abs of maxi-mini
+
+class Solution {
+public:
+       int maximum=0;
+     void solve(TreeNode*root,int minim,int maxim)
+     {   if(!root) return ;
+         minim=min(minim,root->val);
+         maxim=max(maxim,root->val);
+         if(root->left==NULL&&root->right==NULL)
+         maximum=max(maximum,abs(maxim-minim));
+         solve(root->left,minim,maxim);
+         solve(root->right,minim,maxim);
+     }
+    int maxAncestorDiff(TreeNode* root) {
+         int minim=INT_MAX;
+        int maxim=INT_MIN;
+        solve(root,minim,maxim);
+        return maximum;
+    }
+};
