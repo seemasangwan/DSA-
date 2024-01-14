@@ -1,0 +1,23 @@
+#include<bits/stdc++.h>
+using namespace std;
+void queuetostack(queue<int>&q)
+{
+    if(q.empty()) return;
+    int x=q.front();
+    q.pop();
+  queuetostack(q);
+    cout<<x<<" ";
+}
+int main()
+{
+    queue<int>q;
+    int n;
+    cin>>n;
+    while(n--)
+    {
+        int x;
+        cin>>x;
+        q.push(x);
+    }
+   queuetostack(q);
+}
