@@ -1,0 +1,93 @@
+Longest Ideal Subsequence
+You are given a string s consisting of lowercase letters and an integer k. We call a string t ideal if the following conditions are satisfied:
+
+t is a subsequence of the string s.
+The absolute difference in the alphabet order of every two adjacent letters in t is less than or equal to k.
+Return the length of the longest ideal string.
+
+A subsequence is a string that can be derived from another string by deleting some or no characters without changing the order of the remaining characters.
+
+Note that the alphabet order is not cyclic. For example, the absolute difference in the alphabet order of 'a' and 'z' is 25, not 1.
+
+ 
+
+Example 1:
+
+Input: s = "acfgbd", k = 2
+Output: 4
+Explanation: The longest ideal string is "acbd". The length of this string is 4, so 4 is returned.
+Note that "acfgbd" is not ideal because 'c' and 'f' have a difference of 3 in alphabet order.
+Example 2:
+
+Input: s = "abcd", k = 3
+Output: 4
+Explanation: The longest ideal string is "abcd". The length of this string is 4, so 4 is returned.
+
+
+
+solution
+
+class Solution {
+public:
+ /*   int solve(int idx,int prev ,int k , string s,vector<vector<int>>&dp)
+    {
+        if(idx>=s.length())
+        return 0;
+        if(dp[idx][prev+1]!=-1)
+        return dp[idx][prev+1];
+        //take
+        int take=0;
+        if(prev==-1||abs(s[prev]-s[idx])<=k)
+        take=1+solve(idx+1,idx,k,s,dp);
+
+        //nottake
+        int nottake=0;
+        nottake=solve(idx+1,prev,k,s,dp);
+        return dp[idx][prev+1]=max(take,nottake);
+    }*/
+    int longestIdealString(string s, int k) {
+        //memoization o(n*n)--->space 
+        //o(N)---------->time
+      /*int idx=0,prev=-1;
+      int n=s.length();
+      vector<vector<int>>dp(n,vector<int>(n+1,-1));
+      return solve(idx,prev,k,s,dp);  */
+          
+
+
+             // Bottom UP space o(n)
+             // tc o(n2)
+         /*int n=s.length();
+          vector<int>dp(n,1);
+          for(int i=1;i<n;i++)
+          {
+            for(int j=0;j<i;j++)
+            {
+                if(abs(s[i]-s[j])<=k)
+                {
+                    dp[i]=max(dp[i],dp[j]+1);
+                }
+            }
+          }
+         int  ans=*max_element(dp.begin(),dp.end());
+         return ans;*/
+
+
+         /**Optimal code*/
+          vector<int>dp(26,0);
+          for(int i=0;i<s.length();i++)
+          {
+            int idx=s[i]-'a';
+            int left=max(idx-k,0);
+            int right=min(idx+k,25);
+            int maxi=0;
+            for(int j=left;j<=right;j++)
+            {
+              maxi=max(dp[j],maxi);
+            }
+            dp[idx]=max(dp[idx],maxi+1);
+          }
+          int ans=*max_element(dp.begin(),dp.end());
+          return ans;
+    }
+};
