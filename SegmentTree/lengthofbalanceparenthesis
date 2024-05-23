@@ -1,0 +1,104 @@
+class Node
+{    public:
+    int open;
+    int close;
+    int full;
+   Node(int o,int c,int f)
+    {
+        open=o;
+        close=c;
+        full=f;
+    }
+    Node()
+    {
+        open=0;
+        close=0;
+        full=0;
+    }
+};
+class SGTree_Maxi_correct_brackets
+{
+     private:
+     vector<Node>seg;
+    int n;
+   public:
+  
+    void build(int idx,int low,int high,string & arr)
+    {
+        if(low==high)
+        {if(arr[low]=='(')
+        seg[idx].open=1;
+        else
+        seg[idx].close=1;
+        return;
+        }
+         int mid=low+(high-low)/2;
+         build(2*idx+1,low,mid,arr);
+         build(2*idx+2,mid+1,high,arr);
+         int o=0,c=0,f=0;
+    f=min(seg[idx*2+1].open,seg[idx*2+2].close);
+    o=((seg[idx*2+1].open+seg[idx*2+2].open)-f);
+    c=((seg[idx*2+1].close+seg[idx*2+2].close)-f);
+    f=f+(seg[idx*2+1].full+seg[idx*2+2].full);
+    seg[idx].open=o;
+    seg[idx].close=c;
+    seg[idx].full=f;
+
+         
+    }
+    Node query(int idx ,int low ,int high,int l ,int r)
+    {
+        // no overlap
+        if(l>high||low>r)
+      { Node s= Node(0,0,0); 
+        return s;}
+    // complete overlap
+    if(low>=l&&r>=high)
+      return seg[idx];
+    int mid=low+(high-low)/2;
+    Node left=query(idx*2+1,low,mid,l,r);
+    Node right=query(idx*2+2,mid+1,high,l,r);
+    Node res;
+     int f=min(left.open,right.close);
+     int o=left.open+right.open-f;
+     int c=right.close+left.close-f;
+     f=f+left.full+right.full;
+     res.open=o;
+     res.close=c;
+     res.full=f;
+     return res;
+    }
+
+  
+    SGTree_Maxi_correct_brackets(int x)
+    {    n=x;
+        seg.resize(n*4);
+    }
+   
+
+};
+int main()
+{
+  string s;
+  cin>>s;
+  int l=s.length();
+  int m;
+  cin>>m;
+   vector<vector<int>>queryy(m);
+   for(int i=0;i<m;i++)
+   {
+    int l,r;
+    cin>>l>>r;
+    queryy[i]={l,r};
+   }
+   SGTree_Maxi_correct_brackets s1(l);
+  
+    s1.build(0,0,l-1,s);
+ 
+   for(auto q:queryy)
+   {
+    Node res=s1.query(0,0,l-1,q[0]-1,q[1]-1);
+    cout<<2*res.full<<"\n";
+ }
+return 0;
+}
