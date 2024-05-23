@@ -1,0 +1,86 @@
+class SGTreeOrxor
+{
+     private:
+     vector<int>seg;
+    int n;
+   public:
+  
+    void build(int idx,int low,int high,vector<int>&arr,int level)
+    {
+        if(low==high)
+        {seg[idx]=arr[low];
+         return;}
+         int mid=low+(high-low)/2;
+         build(2*idx+1,low,mid,arr,level+1);
+         build(2*idx+2,mid+1,high,arr,level+1);
+         if(level%2==1)
+         seg[idx]=(seg[idx*2+1]|seg[idx*2+2]);
+         else seg[idx]=(seg[idx*2+1]^seg[idx*2+2]);
+         return;
+         
+    }
+    int query()
+    {
+        return seg[0];
+    }
+ void update(int idx,int low,int high,int i,int val,vector<int>&arr,int level)
+    {
+        if(low==high)
+       { seg[idx]=val;
+        arr[i]=val;
+        return ;
+        }
+        int mid=low+(high-low)/2;
+        if(mid>=i)
+        update(2*idx+1,low,mid,i,val,arr,level+1);
+       else update(2*idx+2,mid+1,high,i,val,arr,level+1);
+       if(level%2==1)
+    seg[idx]=(seg[idx*2+1]|seg[idx*2+2]);
+else seg[idx]=(seg[idx*2+1]^seg[idx*2+2]);
+      return ;  
+    }
+  
+    SGTreeOrxor(int x)
+    {    n=x;
+        seg.resize(n*4);
+    }
+    void printseg()
+    {
+        for(auto it:seg)
+        cout<<it<<" ";
+    }
+
+};
+int main()
+{
+  int n,m;
+  cin>>n>>m;
+  int size=pow(2,n);
+  vector<int>arr(size);
+  for(int i=0;i<size;i++)
+  cin>>arr[i];
+   vector<vector<int>>queryy(m);
+   for(int i=0;i<m;i++)
+   {
+    int idx,val;
+    cin>>idx>>val;
+    queryy[i]={idx,val};
+   }
+   SGTreeOrxor s1(size);
+   if(n%2==1)
+    s1.build(0,0,size-1,arr,1);
+   else s1.build(0,0,size-1,arr,0);
+   for(auto q:queryy)
+   {
+     int i=q[0]-1;
+     int val=q[1];
+      if(n%2==1)
+     s1.update(0,0,size-1,i,val,arr,1);
+    else 
+    s1.update(0,0,size-1,i,val,arr,0);
+          cout<<s1.query()<<"\n"; 
+    
+    
+   }
+return 0;
+}
