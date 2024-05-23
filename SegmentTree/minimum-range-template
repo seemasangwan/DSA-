@@ -1,0 +1,54 @@
+class SGTree
+{
+     private:
+    vector<int>seg;
+    int n;
+   public:
+    void build(int idx,int low,int high,vector<int>&arr)
+    {
+        if(low==high)
+        {seg[idx]=arr[low];
+         return;}
+         int mid=low+(high-low)/2;
+         build(2*idx+1,low,mid,arr);
+         build(2*idx+2,mid+1,high,arr);
+         seg[idx]=min(seg[idx*2+1],seg[idx*2+2]);
+         return;
+         
+    }
+    int query(int idx,int low,int high,int l,int r,vector<int>&arr)
+    {
+        // no overlap
+        if(l>high||low>r)
+        return INT_MAX;
+       // complete overlap
+       if(low>=l&&high<=r)
+       return seg[idx];
+      // partial overlap
+      int mid=low+(high-low)/2;
+      int left=query(2*idx+1,low,mid,l,r,arr);
+      int right=query(2*idx+2,mid+1,high,l,r,arr);
+      return min(left,right);
+    }
+
+    void update(int idx,int low,int high,int i,int val,vector<int>&arr)
+    {
+        if(low==high)
+       { seg[idx]=val;
+        arr[i]=val;
+        return ;
+        }
+        int mid=low+(high-low)/2;
+        if(mid>=i)
+        update(2*idx+1,low,mid,i,val,arr);
+       else update(2*idx+2,mid+1,high,i,val,arr);
+    seg[idx]=min(seg[idx*2+1],seg[idx*2+2]);
+      return ;  
+    }
+  
+    SGTree(int x)
+    {    n=x;
+        seg.resize(n*4);
+    }
+
+};
